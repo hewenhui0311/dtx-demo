@@ -1,0 +1,59 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>dtx-demo</groupId>
+		<artifactId>dtx-demo</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+	<artifactId>servicecomb-pack-demo</artifactId>
+	<packaging>pom</packaging>
+	<modules>
+		<module>servicecomb-pack-saga</module>
+		<module>servicecomb-pack-tcc</module>
+	</modules>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.apache.servicecomb.pack</groupId>
+			<artifactId>omega-spring-starter</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>com.google.protobuf</groupId>
+					<artifactId>protobuf-java</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.servicecomb.pack</groupId>
+			<artifactId>omega-transport-resttemplate</artifactId>
+		</dependency>
+		
+		<!-- <dependency>
+			<groupId>org.apache.servicecomb.pack</groupId>
+			<artifactId>omega-spring-cloud-nacos-starter</artifactId>
+		</dependency> -->
+		
+		<!-- <dependency>
+			<groupId>org.apache.servicecomb.pack</groupId>
+			<artifactId>omega-spring-cloud-zookeeper-starter</artifactId>
+		</dependency> -->
+		
+		<dependency>
+			<groupId>dtx-demo</groupId>
+			<artifactId>dtx-demo-common</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.objenesis</groupId>
+			<artifactId>objenesis</artifactId>
+		</dependency>
+	</dependencies>
+
+</project>

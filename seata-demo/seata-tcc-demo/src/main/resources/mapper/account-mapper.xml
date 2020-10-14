@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dtx.seata.tcc.dao.AccountDao">
+
+	<select id="selectByNo" resultType="Account">
+	<![CDATA[
+		select 
+			ID id,
+			ACCOUNT_NO accountNo,
+			BALANCE balance,
+			FROZEN frozen
+		from ACCOUNT
+			where ACCOUNT_NO = #{accountNo}
+	]]>
+	</select>
+	
+	<update id="increaseBalanceByNo">
+	<![CDATA[
+		update ACCOUNT set 
+			BALANCE = BALANCE + #{amount}
+		where ACCOUNT_NO = #{accountNo}  
+	]]>
+	</update>
+	
+	<update id="decreaseBalanceByNo">
+	<![CDATA[
+		update ACCOUNT set 
+			BALANCE = BALANCE - #{amount}
+		where ACCOUNT_NO = #{accountNo}  
+		and BALANCE - #{amount} >= 0
+	]]>
+	</update>
+	
+	<update id="increaseFrozenByNo">
+	<![CDATA[
+		update ACCOUNT set 
+			FROZEN = FROZEN + #{amount}
+		where ACCOUNT_NO = #{accountNo}  
+	]]>
+	</update>
+	
+	<update id="decreaseFrozenByNo">
+	<![CDATA[
+		update ACCOUNT set 
+			FROZEN = FROZEN - #{amount}
+		where ACCOUNT_NO = #{accountNo}  
+		and FROZEN - #{amount} >= 0
+	]]>
+	</update>
+	
+	<insert id="insertAccount" parameterType="Account">
+	<![CDATA[
+		insert into ACCOUNT (
+			ID,
+			ACCOUNT_NO,
+			BALANCE,
+			FROZEN
+		) values (
+			#{id},
+			#{accountNo},
+			#{balance},
+			#{frozen}
+		)
+	]]>
+	</insert>
+</mapper> 

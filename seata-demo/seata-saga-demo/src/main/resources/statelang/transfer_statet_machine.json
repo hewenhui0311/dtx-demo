@@ -1,0 +1,164 @@
+{
+	"Name": "TransferService",
+	"Comment": "Transfer Service",
+	"StartState": "TransferFrom",
+	"Version": "0.0.1",
+	"States": {
+		"TransferFrom": {
+			"Type": "ServiceTask",
+			"ServiceName": "transferService",
+			"ServiceMethod": "transferFrom",
+			"CompensateState": "CompentsateFrom1",
+			"Next": "ChoiceState1",
+			"Input": [
+				{
+					"transfer": "$.[transfer]"
+				}
+			],
+			"Output": {
+				"transferFromResult": "$.#root"
+			},
+			"Status": {
+				"#root == true": "SU",
+				"#root == false": "FA",
+				"$Exception{java.lang.Throwable}": "UN"
+			}
+		},
+		"TransferTo": {
+			"Type": "ServiceTask",
+			"ServiceName": "transferService",
+			"ServiceMethod": "transferTo",
+			"CompensateState": "CompentsateTo",
+			"Input": [
+				{
+					"transfer": "$.[transfer]"
+				}
+			],
+			"Output": {
+				"transferToResult": "$.#root"
+			},
+			"Status": {
+				"#root == true": "SU",
+				"#root == false": "FA",
+				"$Exception{java.lang.Throwable}": "UN"
+			},
+			"Catch": [
+				{
+					"Exceptions": [
+						"java.lang.Throwable"
+					],
+					"Next": "CompensationTrigger"
+				}
+			],
+			"Next": "ChoiceState2"
+		},
+		"UpdateTxSuccessState": {
+			"Type": "ServiceTask",
+			"ServiceName": "transferService",
+			"ServiceMethod": "doTxSuccessState",
+			"CompensateState": "UpdateTxFailState",
+			"Input": [
+				{
+					"transfer": "$.[transfer]"
+				}
+			],
+			"Status": {
+				"#root == true": "SU",
+				"#root == false": "FA",
+				"$Exception{java.lang.Throwable}": "UN"
+			},
+			"Catch": [
+				{
+					"Exceptions": [
+						"java.lang.Throwable"
+					],
+					"Next": "CompensationTrigger"
+				}
+			],
+			"Next": "Succeed"
+		},
+		"ChoiceState1": {
+			"Type": "Choice",
+			"Choices": [
+				{
+					"Expression": "[transferFromResult] == true",
+					"Next": "TransferTo"
+				}
+			],
+			"Default": "BalanceNotEnough"
+		},
+		"ChoiceState2": {
+			"Type": "Choice",
+			"Choices": [
+				{
+					"Expression": "[transferToResult] == true",
+					"Next": "UpdateTxSuccessState"
+				}
+			],
+			"Default": "CompentsateFrom2"
+		},
+		"CompentsateFrom1": {
+			"Type": "ServiceTask",
+			"ServiceName": "transferService",
+			"ServiceMethod": "compentsateFrom",
+			"Input": [
+				{
+					"transfer": "$.[transfer]"
+				}
+			]
+		},
+		"CompentsateFrom2": {
+			"Type": "ServiceTask",
+			"ServiceName": "transferService",
+			"ServiceMethod": "compentsateFrom",
+			"Input": [
+				{
+					"transfer": "$.[transfer]"
+				}
+			],
+			"Next": "Succeed"
+		},
+		"CompentsateTo": {
+			"Type": "ServiceTask",
+			"ServiceName": "transferService",
+			"ServiceMethod": "compentsateTo",
+			"Input": [
+				{
+					"transfer": "$.[transfer]"
+				}
+			]
+		},
+		"CompensationTrigger": {
+			"Type": "CompensationTrigger",
+			"Next": "Fail"
+		},
+		"UpdateTxFailState": {
+			"Type": "ServiceTask",
+			"ServiceName": "transferService",
+			"ServiceMethod": "updateTxFailState",
+			"Input": [
+				{
+					"transfer": "$.[transfer]"
+				}
+			]
+		},
+		"BalanceNotEnough": {
+			"Type": "Fail",
+			"ErrorCode": "PRECONDITION_FAILED",
+			"Message": "账户 $.[transfer].[fromAccountNo] 余额不足"
+		},
+		"AccountNotExist": {
+			"Type": "Fail",
+			"ErrorCode": "PRECONDITION_FAILED",
+			"Message": "账户 $.[transfer].[toAccountNo] 不存在"
+		},
+		"Fail": {
+			"Type": "Fail",
+			"ErrorCode": "INTERNAL_SERVER_ERROR",
+			"Message": "转账失败"
+		},
+		"Succeed": {
+			"Type": "Succeed"
+		}
+	}
+}

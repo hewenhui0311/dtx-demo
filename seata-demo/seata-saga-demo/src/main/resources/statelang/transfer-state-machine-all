@@ -1,0 +1,520 @@
+{
+  "nodes": [
+    {
+      "type": "node",
+      "size": "72*72",
+      "shape": "flow-circle",
+      "color": "#FA8C16",
+      "label": "Start",
+      "stateId": "Start1",
+      "stateType": "Start",
+      "stateProps": {
+        "StateMachine": {
+          "Name": "TransferService",
+          "Comment": "",
+          "Version": "0.0.1"
+        }
+      },
+      "x": 490.09999084472656,
+      "y": -48,
+      "id": "68b8167b"
+    },
+    {
+      "type": "node",
+      "size": "110*48",
+      "shape": "flow-rect",
+      "color": "#1890FF",
+      "label": "TransferTo",
+      "stateId": "TransferTo",
+      "stateType": "ServiceTask",
+      "stateProps": {
+        "ServiceName": "transferService",
+        "ServiceMethod": "transferTo",
+        "Input": [
+          {
+            "id": "$.[id]",
+            "fromAccountNo": "$.[fromAccountNo]",
+            "toAccountNo": "$.[toAccountNo]",
+            "amount": "$.[amount]"
+          }
+        ],
+        "Output": {
+          "transferToResult": "$.#root"
+        },
+        "Status": {
+          "#root == true": "SU",
+          "#root == false": "FA",
+          "$Exception{java.lang.Throwable}": "UN"
+        },
+        "Retry": [
+          {
+            "Exceptions": [
+              "java.lang.Throwable"
+            ],
+            "IntervalSeconds": 1.5,
+            "MaxAttempts": 3,
+            "BackoffRate": 1.5
+          },
+          {
+            "IntervalSeconds": 1,
+            "MaxAttempts": 3,
+            "BackoffRate": 1.5
+          }
+        ]
+      },
+      "x": 490.09999084472656,
+      "y": 62.5,
+      "id": "433a6150"
+    },
+    {
+      "type": "node",
+      "size": "80*72",
+      "shape": "flow-rhombus",
+      "color": "#13C2C2",
+      "label": "Choice",
+      "stateId": "Choice1",
+      "stateType": "Choice",
+      "x": 490.09999084472656,
+      "y": 174.5,
+      "id": "05f918f7"
+    },
+    {
+      "type": "node",
+      "size": "72*72",
+      "shape": "flow-circle",
+      "color": "red",
+      "label": "BalanceNotEnough",
+      "stateId": "BalanceNotEnough",
+      "stateType": "Fail",
+      "stateProps": {
+        "ErrorCode": "PRECONDITION_FAILED",
+        "Message": "账户$.[fromAccountNo]余额不足"
+      },
+      "x": 655.0999908447266,
+      "y": 174,
+      "id": "f0717651"
+    },
+    {
+      "type": "node",
+      "size": "110*48",
+      "shape": "flow-rect",
+      "color": "#1890FF",
+      "label": "TransferTo",
+      "stateId": "TransferTo",
+      "stateType": "ServiceTask",
+      "stateProps": {
+        "ServiceName": "transferService",
+        "ServiceMethod": "transferTo",
+        "Input": [
+          {
+            "id": "$.[id]",
+            "fromAccountNo": "$.[fromAccountNo]",
+            "toAccountNo": "$.[toAccountNo]",
+            "amount": "$.[amount]"
+          }
+        ],
+        "Output": {
+          "transferToResult": "$.#root"
+        },
+        "Status": {
+          "#root == true": "SU",
+          "#root == false": "FA",
+          "$Exception{java.lang.Throwable}": "UN"
+        },
+        "Retry": [
+          {
+            "Exceptions": [
+              "java.lang.Throwable"
+            ],
+            "IntervalSeconds": 1.5,
+            "MaxAttempts": 3,
+            "BackoffRate": 1.5
+          },
+          {
+            "IntervalSeconds": 1,
+            "MaxAttempts": 3,
+            "BackoffRate": 1.5
+          }
+        ]
+      },
+      "x": 490.59999084472656,
+      "y": 291.5,
+      "id": "e4cab1a6"
+    },
+    {
+      "type": "node",
+      "size": "72*72",
+      "shape": "flow-circle",
+      "color": "#05A465",
+      "label": "Succeed",
+      "stateId": "Succeed1",
+      "stateType": "Succeed",
+      "x": 490.09999084472656,
+      "y": 627.5,
+      "id": "f2ae389e",
+      "stateProps": {
+        "ErrorCode": "SUCCESS",
+        "Message": "转账成功"
+      }
+    },
+    {
+      "type": "node",
+      "size": "39*39",
+      "shape": "flow-circle",
+      "color": "red",
+      "label": "Catch",
+      "stateId": "Catch1",
+      "stateType": "Catch",
+      "x": 540.0999908447266,
+      "y": 313,
+      "id": "e0929b0a"
+    },
+    {
+      "type": "node",
+      "size": "110*48",
+      "shape": "flow-capsule",
+      "color": "red",
+      "label": "Compensation\nTrigger",
+      "stateId": "CompensationTrigger1",
+      "stateType": "CompensationTrigger",
+      "x": 657.0999908447266,
+      "y": 313,
+      "id": "a15b74e1"
+    },
+    {
+      "type": "node",
+      "size": "110*48",
+      "shape": "flow-capsule",
+      "color": "#722ED1",
+      "label": "CompentsateFrom",
+      "stateId": "compentsateFrom",
+      "stateType": "Compensation",
+      "stateProps": {
+        "ServiceName": "transferService",
+        "ServiceMethod": "compentsateFrom",
+        "Input": [
+          {
+            "id": "$.[id]",
+            "fromAccountNo": "$.[fromAccountNo]",
+            "toAccountNo": "$.[toAccountNo]",
+            "amount": "$.[amount]"
+          }
+        ],
+        "Output": {},
+        "Status": {},
+        "Retry": []
+      },
+      "x": 306.09999084472656,
+      "y": 61,
+      "id": "8d10bf25"
+    },
+    {
+      "type": "node",
+      "size": "110*48",
+      "shape": "flow-capsule",
+      "color": "#722ED1",
+      "label": "CompentsateTo",
+      "stateId": "compentsateTo",
+      "stateType": "Compensation",
+      "stateProps": {
+        "ServiceName": "transferService",
+        "ServiceMethod": "compentsateTo",
+        "Input": [
+          {
+            "id": "$.[id]",
+            "fromAccountNo": "$.[fromAccountNo]",
+            "toAccountNo": "$.[toAccountNo]",
+            "amount": "$.[amount]"
+          }
+        ],
+        "Output": {},
+        "Status": {},
+        "Retry": []
+      },
+      "x": 307.09999084472656,
+      "y": 291,
+      "id": "37ce8d42"
+    },
+    {
+      "type": "node",
+      "size": "80*72",
+      "shape": "flow-rhombus",
+      "color": "#13C2C2",
+      "label": "Choice",
+      "stateId": "Choice2",
+      "stateType": "Choice",
+      "x": 490.09999084472656,
+      "y": 411.10000228881836,
+      "id": "26e30d03"
+    },
+    {
+      "type": "node",
+      "size": "110*48",
+      "shape": "flow-rect",
+      "color": "#1890FF",
+      "label": "CompentsateFrom",
+      "stateId": "compentsateFrom2",
+      "stateType": "ServiceTask",
+      "stateProps": {
+        "ServiceName": "transferService",
+        "ServiceMethod": "compentsateFrom",
+        "Input": [
+          {
+            "id": "$.[id]",
+            "fromAccountNo": "$.[fromAccountNo]",
+            "toAccountNo": "$.[toAccountNo]",
+            "amount": "$.[amount]"
+          }
+        ],
+        "Output": {},
+        "Status": {},
+        "Retry": []
+      },
+      "x": 655.0999908447266,
+      "y": 412,
+      "id": "7a9716ad"
+    },
+    {
+      "type": "node",
+      "size": "72*72",
+      "shape": "flow-circle",
+      "color": "red",
+      "label": "AccountNotExist",
+      "stateId": "AccountNotExist",
+      "stateType": "Fail",
+      "stateProps": {
+        "ErrorCode": "PRECONDITION_FAILED",
+        "Message": "账户$.[toAccountNo]不存在"
+      },
+      "x": 814.5999908447266,
+      "y": 412,
+      "id": "37b63116"
+    },
+    {
+      "type": "node",
+      "size": "72*72",
+      "shape": "flow-circle",
+      "color": "red",
+      "label": "Fail",
+      "stateId": "Fail",
+      "stateType": "Fail",
+      "stateProps": {
+        "ErrorCode": "INTERNAL_SERVER_ERROR",
+        "Message": "转账失败"
+      },
+      "x": 812.0999908447266,
+      "y": 313,
+      "id": "7b70e355"
+    },
+    {
+      "type": "node",
+      "size": "110*48",
+      "shape": "flow-rect",
+      "color": "#1890FF",
+      "label": "TxSuccessState",
+      "stateId": "TxSuccessState",
+      "stateType": "ServiceTask",
+      "stateProps": {
+        "ServiceName": "transferService",
+        "ServiceMethod": "doTxSuccessState",
+        "Input": [
+          "$.[id]"
+        ],
+        "Output": {},
+        "Status": {
+          "#root == true": "SU",
+          "#root == false": "FA",
+          "$Exception{java.lang.Throwable}": "UN"
+        },
+        "Retry": []
+      },
+      "x": 489.59999084472656,
+      "y": 519,
+      "id": "f01a0bef"
+    },
+    {
+      "type": "node",
+      "size": "110*48",
+      "shape": "flow-capsule",
+      "color": "#722ED1",
+      "label": "TxFailState",
+      "stateId": "updateTxFailState",
+      "stateType": "Compensation",
+      "stateProps": {
+        "ServiceName": "transferService",
+        "ServiceMethod": "updateTxFailState",
+        "Input": [
+          "$.[id]"
+        ],
+        "Output": {},
+        "Status": {},
+        "Retry": []
+      },
+      "x": 307.09999084472656,
+      "y": 521,
+      "id": "dbc3b09f"
+    },
+    {
+      "type": "node",
+      "size": "39*39",
+      "shape": "flow-circle",
+      "color": "red",
+      "label": "Catch",
+      "stateId": "Catch2",
+      "stateType": "Catch",
+      "x": 545.0999908447266,
+      "y": 541.5,
+      "id": "d1df03ad"
+    }
+  ],
+  "edges": [
+    {
+      "source": "7a9716ad",
+      "sourceAnchor": 1,
+      "target": "37b63116",
+      "targetAnchor": 3,
+      "id": "15198421"
+    },
+    {
+      "source": "68b8167b",
+      "sourceAnchor": 2,
+      "target": "433a6150",
+      "targetAnchor": 0,
+      "id": "2e42d3f7"
+    },
+    {
+      "source": "433a6150",
+      "sourceAnchor": 2,
+      "target": "05f918f7",
+      "targetAnchor": 0,
+      "id": "3854a3d1"
+    },
+    {
+      "source": "05f918f7",
+      "sourceAnchor": 1,
+      "target": "f0717651",
+      "targetAnchor": 3,
+      "id": "d0e79298",
+      "stateProps": {
+        "Default": false
+      },
+      "label": "",
+      "shape": "flow-smooth"
+    },
+    {
+      "source": "05f918f7",
+      "sourceAnchor": 2,
+      "target": "e4cab1a6",
+      "targetAnchor": 0,
+      "id": "56c13152",
+      "stateProps": {
+        "Expression": "[transferFromResult] == true"
+      },
+      "label": "",
+      "shape": "flow-smooth"
+    },
+    {
+      "source": "e4cab1a6",
+      "sourceAnchor": 2,
+      "target": "26e30d03",
+      "targetAnchor": 0,
+      "id": "39d0ed79"
+    },
+    {
+      "source": "e0929b0a",
+      "sourceAnchor": 1,
+      "target": "a15b74e1",
+      "targetAnchor": 3,
+      "id": "920cb242",
+      "stateProps": {
+        "Exceptions": [
+          "java.lang.Throwable"
+        ]
+      },
+      "label": "",
+      "shape": "flow-smooth"
+    },
+    {
+      "source": "a15b74e1",
+      "sourceAnchor": 1,
+      "target": "7b70e355",
+      "targetAnchor": 3,
+      "id": "aad2bb4e"
+    },
+    {
+      "source": "433a6150",
+      "sourceAnchor": 3,
+      "target": "8d10bf25",
+      "targetAnchor": 1,
+      "id": "88e74c79",
+      "style": {
+        "lineDash": "4"
+      }
+    },
+    {
+      "source": "e4cab1a6",
+      "sourceAnchor": 3,
+      "target": "37ce8d42",
+      "targetAnchor": 1,
+      "id": "83479f83",
+      "style": {
+        "lineDash": "4"
+      }
+    },
+    {
+      "source": "26e30d03",
+      "sourceAnchor": 1,
+      "target": "7a9716ad",
+      "targetAnchor": 3,
+      "id": "44afc1d3",
+      "stateProps": {
+        "Default": false
+      },
+      "label": "",
+      "shape": "flow-smooth"
+    },
+    {
+      "source": "26e30d03",
+      "sourceAnchor": 2,
+      "target": "f01a0bef",
+      "targetAnchor": 0,
+      "id": "fc3c99e1",
+      "stateProps": {
+        "Expression": "[transferToResult] == true"
+      },
+      "label": "",
+      "shape": "flow-smooth"
+    },
+    {
+      "source": "f01a0bef",
+      "sourceAnchor": 2,
+      "target": "f2ae389e",
+      "targetAnchor": 0,
+      "id": "2048c21e"
+    },
+    {
+      "source": "f01a0bef",
+      "sourceAnchor": 3,
+      "target": "dbc3b09f",
+      "targetAnchor": 1,
+      "id": "257bd3ae",
+      "style": {
+        "lineDash": "4"
+      }
+    },
+    {
+      "source": "d1df03ad",
+      "sourceAnchor": 1,
+      "target": "a15b74e1",
+      "targetAnchor": 2,
+      "id": "8c06b4cf",
+      "stateProps": {
+        "Exceptions": [
+          "java.lang.Throwable"
+        ]
+      },
+      "label": "",
+      "shape": "flow-smooth"
+    }
+  ]
+}
